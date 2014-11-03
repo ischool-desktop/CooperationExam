@@ -3,13 +3,11 @@ using FISCA.Presentation.Controls;
 using K12.Data;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace CooperationExam
 {
@@ -20,15 +18,12 @@ namespace CooperationExam
         public GradingCheckForm()
         {
             InitializeComponent();
-
             CoursesGradingStatus = new List<CourseGradingStatus>();
         }
 
         /// <summary>
         /// 僅載入清單類型的資料，不應進行條件式的資料載入。
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void GradingCheckForm_Load(object sender, EventArgs e)
         {
             dgStatus.AutoGenerateColumns = false;
@@ -54,23 +49,43 @@ namespace CooperationExam
 
         private void btnRefresh_Click(object sender, EventArgs e)
         {
-            ContinueQueryCheck();
-            LoadCoursePart1();
+            if (!ContinueQueryCheck())
+                return;
 
-            dgStatus.DataSource = CoursesGradingStatus;
+            BeginLoading();
+            Task task = Task.Factory.StartNew(() =>
+            {
+                LoadCourses(); // Output => CoursesGradingStatus
+                LoadCoursesExamStatus(); // Output => CoursesGradingStatus
+            });
+
+            task.ContinueWith(x =>
+            {
+                if (x.IsFaulted)
+                    MessageBox.Show("讀取資料錯誤。");
+                else
+                    dgStatus.DataSource = GetFilteredData();
+
+                EndLoading();
+            }, TaskScheduler.FromCurrentSynchronizationContext());
+        }
+
+        /// <summary>
+        /// 依畫面設定過慮資料後回傳。
+        /// </summary>
+        /// <returns></returns>
+        private IEnumerable<CourseGradingStatus> GetFilteredData()
+        {
+            return new SortableBindingList<CourseGradingStatus>(CoursesGradingStatus);
         }
 
         /// <summary>
         /// 載入課程、授課教師資訊，不含輸入狀態。
         /// </summary>
-        private void LoadCoursePart1()
+        private void LoadCourses()
         {
             //查詢課程、授課老師資訊。
-            string queryCourses = @"select course.id,course.course_name,teacher.teacher_name,tc_instruct.sequence
-from course join tc_instruct on course.id=tc_instruct.ref_course_id
-	join teacher on teacher.id=tc_instruct.ref_teacher_id
-where course.school_year=@@SchoolYear and course.semester=@@Semester
-order by course.id,sequence";
+            string queryCourses = this.GetRCString("SQL.LoadCourses.sql");
 
             queryCourses = queryCourses.Replace("@@SchoolYear", GetSchoolYear());
             queryCourses = queryCourses.Replace("@@Semester", GetSemester());
@@ -84,6 +99,7 @@ order by course.id,sequence";
                 string cid = row["id"] + "";
                 string courseName = row["course_name"] + "";
                 string teacherName = row["teacher_name"] + "";
+                string stuCount = row["stu_count"] + "";
                 int sequence = int.Parse(row["sequence"] + "");
 
                 CourseGradingStatus cgs = new CourseGradingStatus();
@@ -91,6 +107,13 @@ order by course.id,sequence";
                 {
                     cgs.CourseID = cid;
                     cgs.CourseName = courseName;
+
+                    int attendCount;
+                    if (int.TryParse(stuCount, out attendCount))
+                        cgs.AttendCount = attendCount;
+                    else
+                        cgs.AttendCount = 0;
+
                     courses.Add(cid, cgs);
                 }
                 else
@@ -105,6 +128,69 @@ order by course.id,sequence";
             }
 
             CoursesGradingStatus = courses.Values.ToList();
+        }
+
+        /// <summary>
+        /// 載入課程的輸入狀況。
+        /// </summary>
+        private void LoadCoursesExamStatus()
+        {
+            //參數：@@SchoolYear、@@Semester、@@ExamID
+            string queryCourses = this.GetRCString("SQL.LoadCoursesExamStatus.sql");
+
+            queryCourses = queryCourses.Replace("@@SchoolYear", GetSchoolYear());
+            queryCourses = queryCourses.Replace("@@Semester", GetSemester());
+            queryCourses = queryCourses.Replace("@@ExamID", GetExamID());
+            queryCourses = queryCourses.Replace("@@CourseIDs", GetCourseIDs());
+
+            QueryHelper helper = new QueryHelper();
+            DataTable dt = helper.Select(queryCourses);
+
+            Dictionary<string, CourseGradingStatus> courses = CoursesGradingStatus.ToDictionary(x => x.CourseID);
+            foreach (DataRow row in dt.Rows)
+            {
+                string cid = row["courseid"] + ""; //課程編號。
+                /*
+            <Extension>
+	            <Score Sequence="1">89</Score>
+	            <Score Sequence="2">87</Score>
+            </Extension>
+                 * */
+                string extxml = row["extension"] + "";
+
+                if (!courses.ContainsKey(cid))
+                    continue; //不處理，理論上不會到這兒。
+
+                CourseGradingStatus cgs = courses[cid];
+
+                if (string.IsNullOrWhiteSpace(extxml))
+                    continue; //空的資料就跳過。
+
+                XElement extelm = XElement.Parse(string.Format("<Extension>{0}</Extension>", extxml));
+
+                foreach (XElement score in extelm.Elements("Score"))
+                {
+                    if (!score.HasAttributes) //如果 Score 沒有屬性，則非協同教學資料。
+                        continue;
+
+                    int sequence;
+                    int.TryParse(score.Attribute("Sequence").Value, out sequence);
+
+                    if (cgs.TeachersStatus.ContainsKey(sequence))
+                    {
+                        TeacherStatus ts = cgs.TeachersStatus[sequence];
+
+                        if (!string.IsNullOrWhiteSpace(score.Value)) //有成績就 ++
+                            ts.Current++;
+                    }
+                }
+            }
+        }
+
+        private string GetCourseIDs()
+        {
+            List<string> courseIDs = CoursesGradingStatus.ConvertAll(x => x.CourseID);
+            return string.Join(",", courseIDs);
         }
 
         /// <summary>
@@ -185,23 +271,30 @@ order by course.id,sequence";
 
         private string GetSchoolYear()
         {
+            if (InvokeRequired)
+                return Invoke(new Func<string>(GetSchoolYear)) + "";
+
             return cboSchoolYear.Text;
         }
 
         private string GetSemester()
         {
+            if (InvokeRequired)
+                return Invoke(new Func<string>(GetSemester)) + "";
+
             return cboSemester.Text;
         }
 
-        class CourseBindingSource : BindingSource
+        private string GetExamID()
         {
-            public override bool SupportsSorting
-            {
-                get
-                {
-                    return true;
-                }
-            }
+            if (InvokeRequired)
+                return Invoke(new Func<string>(GetExamID)) + "";
+
+            ExamRecord er = cboExam.SelectedItem as ExamRecord;
+            if (er != null)
+                return er.ID;
+            else
+                return string.Empty;
         }
     }
 }

@@ -41,13 +41,18 @@ namespace CooperationExam
             get { return GetStatusString(3); }
         }
 
+        /// <summary>
+        /// 取得輸入狀態的字串，例：呂韻如 (45/45)
+        /// </summary>
+        /// <param name="sequence"></param>
+        /// <returns></returns>
         private string GetStatusString(int sequence)
         {
             if (TeachersStatus.ContainsKey(sequence))
             {
                 TeacherStatus ts = TeachersStatus[sequence];
 
-                return string.Format("({0}/{1}) {2}", ts.Current, AttendCount, ts.TeacherName);
+                return string.Format("{0} ({1}/{2})", ts.TeacherName, ts.Current, AttendCount);
             }
             else
                 return string.Empty;

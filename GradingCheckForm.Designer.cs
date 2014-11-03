@@ -40,7 +40,7 @@
             this.btnExport = new DevComponents.DotNetBar.ButtonX();
             this.btnRefresh = new DevComponents.DotNetBar.ButtonX();
             this.btnExit = new DevComponents.DotNetBar.ButtonX();
-            this.checkBoxX1 = new DevComponents.DotNetBar.Controls.CheckBoxX();
+            this.chkUnsuccess = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.cp1 = new DevComponents.DotNetBar.Controls.CircularProgress();
             this.ep1 = new System.Windows.Forms.ErrorProvider(this.components);
             this.chCourseName = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -160,7 +160,7 @@
             this.dgStatus.ReadOnly = true;
             this.dgStatus.RowHeadersVisible = false;
             this.dgStatus.RowTemplate.Height = 24;
-            this.dgStatus.Size = new System.Drawing.Size(603, 317);
+            this.dgStatus.Size = new System.Drawing.Size(603, 311);
             this.dgStatus.TabIndex = 2;
             // 
             // btnExport
@@ -169,7 +169,7 @@
             this.btnExport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnExport.BackColor = System.Drawing.Color.Transparent;
             this.btnExport.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
-            this.btnExport.Location = new System.Drawing.Point(12, 398);
+            this.btnExport.Location = new System.Drawing.Point(12, 394);
             this.btnExport.Name = "btnExport";
             this.btnExport.Size = new System.Drawing.Size(75, 23);
             this.btnExport.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
@@ -179,7 +179,6 @@
             // btnRefresh
             // 
             this.btnRefresh.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
-            this.btnRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnRefresh.BackColor = System.Drawing.Color.Transparent;
             this.btnRefresh.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
             this.btnRefresh.Location = new System.Drawing.Point(255, 45);
@@ -196,29 +195,29 @@
             this.btnExit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnExit.BackColor = System.Drawing.Color.Transparent;
             this.btnExit.ColorTable = DevComponents.DotNetBar.eButtonColor.OrangeWithBackground;
-            this.btnExit.Location = new System.Drawing.Point(540, 398);
+            this.btnExit.Location = new System.Drawing.Point(540, 394);
             this.btnExit.Name = "btnExit";
             this.btnExit.Size = new System.Drawing.Size(75, 23);
             this.btnExit.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.btnExit.TabIndex = 3;
             this.btnExit.Text = "離開";
             // 
-            // checkBoxX1
+            // chkUnsuccess
             // 
-            this.checkBoxX1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkBoxX1.AutoSize = true;
-            this.checkBoxX1.BackColor = System.Drawing.Color.Transparent;
+            this.chkUnsuccess.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkUnsuccess.AutoSize = true;
+            this.chkUnsuccess.BackColor = System.Drawing.Color.Transparent;
             // 
             // 
             // 
-            this.checkBoxX1.BackgroundStyle.Class = "";
-            this.checkBoxX1.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.checkBoxX1.Location = new System.Drawing.Point(471, 46);
-            this.checkBoxX1.Name = "checkBoxX1";
-            this.checkBoxX1.Size = new System.Drawing.Size(147, 21);
-            this.checkBoxX1.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
-            this.checkBoxX1.TabIndex = 4;
-            this.checkBoxX1.Text = "僅顯示未完成之課程";
+            this.chkUnsuccess.BackgroundStyle.Class = "";
+            this.chkUnsuccess.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.chkUnsuccess.Location = new System.Drawing.Point(471, 46);
+            this.chkUnsuccess.Name = "chkUnsuccess";
+            this.chkUnsuccess.Size = new System.Drawing.Size(147, 21);
+            this.chkUnsuccess.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
+            this.chkUnsuccess.TabIndex = 4;
+            this.chkUnsuccess.Text = "僅顯示未完成之課程";
             // 
             // cp1
             // 
@@ -240,11 +239,11 @@
             // 
             // chCourseName
             // 
-            this.chCourseName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.chCourseName.DataPropertyName = "CourseName";
             this.chCourseName.HeaderText = "課程名稱";
             this.chCourseName.Name = "chCourseName";
             this.chCourseName.ReadOnly = true;
+            this.chCourseName.Width = 270;
             // 
             // chT1
             // 
@@ -276,7 +275,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(620, 423);
             this.Controls.Add(this.cp1);
-            this.Controls.Add(this.checkBoxX1);
+            this.Controls.Add(this.chkUnsuccess);
             this.Controls.Add(this.btnExit);
             this.Controls.Add(this.btnRefresh);
             this.Controls.Add(this.btnExport);
@@ -311,7 +310,7 @@
         private DevComponents.DotNetBar.ButtonX btnExport;
         private DevComponents.DotNetBar.ButtonX btnRefresh;
         private DevComponents.DotNetBar.ButtonX btnExit;
-        private DevComponents.DotNetBar.Controls.CheckBoxX checkBoxX1;
+        private DevComponents.DotNetBar.Controls.CheckBoxX chkUnsuccess;
         private DevComponents.DotNetBar.Controls.CircularProgress cp1;
         private System.Windows.Forms.ErrorProvider ep1;
         private System.Windows.Forms.DataGridViewTextBoxColumn chCourseName;
