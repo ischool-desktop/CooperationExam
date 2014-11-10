@@ -37,16 +37,16 @@
             this.cboExam = new DevComponents.DotNetBar.Controls.ComboBoxEx();
             this.lblExam = new DevComponents.DotNetBar.LabelX();
             this.dgStatus = new DevComponents.DotNetBar.Controls.DataGridViewX();
+            this.chCourseName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.chT1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.chT2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.chT3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.btnExport = new DevComponents.DotNetBar.ButtonX();
             this.btnRefresh = new DevComponents.DotNetBar.ButtonX();
             this.btnExit = new DevComponents.DotNetBar.ButtonX();
             this.chkUnsuccess = new DevComponents.DotNetBar.Controls.CheckBoxX();
             this.cp1 = new DevComponents.DotNetBar.Controls.CircularProgress();
             this.ep1 = new System.Windows.Forms.ErrorProvider(this.components);
-            this.chCourseName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.chT1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.chT2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.chT3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dgStatus)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ep1)).BeginInit();
             this.SuspendLayout();
@@ -163,6 +163,39 @@
             this.dgStatus.Size = new System.Drawing.Size(603, 311);
             this.dgStatus.TabIndex = 2;
             // 
+            // chCourseName
+            // 
+            this.chCourseName.DataPropertyName = "CourseName";
+            this.chCourseName.HeaderText = "課程名稱";
+            this.chCourseName.Name = "chCourseName";
+            this.chCourseName.ReadOnly = true;
+            this.chCourseName.Width = 340;
+            // 
+            // chT1
+            // 
+            this.chT1.DataPropertyName = "Teacher1Name";
+            this.chT1.HeaderText = "教師一";
+            this.chT1.Name = "chT1";
+            this.chT1.ReadOnly = true;
+            this.chT1.Width = 130;
+            // 
+            // chT2
+            // 
+            this.chT2.DataPropertyName = "Teacher2Name";
+            this.chT2.HeaderText = "教師二";
+            this.chT2.Name = "chT2";
+            this.chT2.ReadOnly = true;
+            this.chT2.Width = 130;
+            // 
+            // chT3
+            // 
+            this.chT3.DataPropertyName = "Teacher3Name";
+            this.chT3.HeaderText = "教師三";
+            this.chT3.Name = "chT3";
+            this.chT3.ReadOnly = true;
+            this.chT3.Visible = false;
+            this.chT3.Width = 110;
+            // 
             // btnExport
             // 
             this.btnExport.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
@@ -175,6 +208,7 @@
             this.btnExport.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.btnExport.TabIndex = 3;
             this.btnExport.Text = "匯出";
+            this.btnExport.Visible = false;
             // 
             // btnRefresh
             // 
@@ -201,6 +235,7 @@
             this.btnExit.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
             this.btnExit.TabIndex = 3;
             this.btnExit.Text = "離開";
+            this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
             // 
             // chkUnsuccess
             // 
@@ -212,6 +247,9 @@
             // 
             this.chkUnsuccess.BackgroundStyle.Class = "";
             this.chkUnsuccess.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
+            this.chkUnsuccess.Checked = true;
+            this.chkUnsuccess.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkUnsuccess.CheckValue = "Y";
             this.chkUnsuccess.Location = new System.Drawing.Point(471, 46);
             this.chkUnsuccess.Name = "chkUnsuccess";
             this.chkUnsuccess.Size = new System.Drawing.Size(147, 21);
@@ -236,38 +274,6 @@
             // ep1
             // 
             this.ep1.ContainerControl = this;
-            // 
-            // chCourseName
-            // 
-            this.chCourseName.DataPropertyName = "CourseName";
-            this.chCourseName.HeaderText = "課程名稱";
-            this.chCourseName.Name = "chCourseName";
-            this.chCourseName.ReadOnly = true;
-            this.chCourseName.Width = 270;
-            // 
-            // chT1
-            // 
-            this.chT1.DataPropertyName = "Teacher1Name";
-            this.chT1.HeaderText = "教師一";
-            this.chT1.Name = "chT1";
-            this.chT1.ReadOnly = true;
-            this.chT1.Width = 110;
-            // 
-            // chT2
-            // 
-            this.chT2.DataPropertyName = "Teacher2Name";
-            this.chT2.HeaderText = "教師二";
-            this.chT2.Name = "chT2";
-            this.chT2.ReadOnly = true;
-            this.chT2.Width = 110;
-            // 
-            // chT3
-            // 
-            this.chT3.DataPropertyName = "Teacher3Name";
-            this.chT3.HeaderText = "教師三";
-            this.chT3.Name = "chT3";
-            this.chT3.ReadOnly = true;
-            this.chT3.Width = 110;
             // 
             // GradingCheckForm
             // 

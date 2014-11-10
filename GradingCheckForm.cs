@@ -76,7 +76,26 @@ namespace CooperationExam
         /// <returns></returns>
         private IEnumerable<CourseGradingStatus> GetFilteredData()
         {
-            return new SortableBindingList<CourseGradingStatus>(CoursesGradingStatus);
+            List<CourseGradingStatus> result = new List<CourseGradingStatus>();
+
+            if (chkUnsuccess.Checked)
+            {
+                foreach (var course in CoursesGradingStatus)
+                {
+                    foreach (var teacher in course.TeachersStatus.Values)
+                    {
+                        if (teacher.Current < course.AttendCount)
+                        {
+                            result.Add(course);
+                            break;
+                        }
+                    }
+                }
+            }
+            else
+                result = CoursesGradingStatus;
+
+            return new SortableBindingList<CourseGradingStatus>(result);
         }
 
         /// <summary>
@@ -89,6 +108,7 @@ namespace CooperationExam
 
             queryCourses = queryCourses.Replace("@@SchoolYear", GetSchoolYear());
             queryCourses = queryCourses.Replace("@@Semester", GetSemester());
+            queryCourses = queryCourses.Replace("@@ExamID", GetExamID());
 
             QueryHelper helper = new QueryHelper();
             DataTable dt = helper.Select(queryCourses);
@@ -168,7 +188,10 @@ namespace CooperationExam
 
                 XElement extelm = XElement.Parse(string.Format("<Extension>{0}</Extension>", extxml));
 
-                foreach (XElement score in extelm.Elements("Score"))
+                if (extelm.Element("Extension") == null)
+                    continue;
+
+                foreach (XElement score in extelm.Element("Extension").Elements("Score"))
                 {
                     if (!score.HasAttributes) //如果 Score 沒有屬性，則非協同教學資料。
                         continue;
@@ -189,6 +212,9 @@ namespace CooperationExam
 
         private string GetCourseIDs()
         {
+            if (CoursesGradingStatus.Count <= 0)
+                return "0"; //沒有半個課程，就回傳「0」，因為也不會有0號的課程，所以結果是什麼都查不到就行了。
+
             List<string> courseIDs = CoursesGradingStatus.ConvertAll(x => x.CourseID);
             return string.Join(",", courseIDs);
         }
@@ -295,6 +321,11 @@ namespace CooperationExam
                 return er.ID;
             else
                 return string.Empty;
+        }
+
+        private void btnExit_Click(object sender, EventArgs e)
+        {
+            Close();
         }
     }
 }
