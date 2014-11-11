@@ -20,7 +20,7 @@ namespace CooperationExam
         private BackgroundWorker _BW;
         private QueryHelper _Q;
         private UpdateHelper _U;
-        private string _schoolYear, _semester;
+        private string _schoolYear, _semester,_examid;
 
         public ScoreCalculate()
         {
@@ -48,6 +48,14 @@ namespace CooperationExam
 
             cboSchoolYear.Text = schoolYear;
             cboSemester.Text = semester;
+
+            foreach (ExamRecord exam in K12.Data.Exam.SelectAll())
+            {
+                    cboExam.Items.Add(new ExamItem(exam.Name, exam.ID));
+            }
+
+            if (cboExam.Items.Count > 0)
+                cboExam.SelectedItem = cboExam.Items[0];
         }
 
         private void _BW_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -58,6 +66,8 @@ namespace CooperationExam
         private void _BW_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             SetForm(true);
+            MessageBox.Show("協同成績計算完成");
+            this.Close();
         }
 
         private void _BW_DoWork(object sender, DoWorkEventArgs e)
@@ -77,7 +87,7 @@ namespace CooperationExam
             sql += " join student on sc_attend.ref_student_id=student.id";
             sql += " left join class on student.ref_class_id=class.id";
             sql += " left join exam on sce_take.ref_exam_id=exam.id";
-            sql += " where course.school_year=" + _schoolYear + " and course.semester=" + _semester + " and tag.access_control_code='OneAdmin.CooperationExam'";
+            sql += " where course.school_year=" + _schoolYear + " and course.semester=" + _semester + " and tag.access_control_code='OneAdmin.CooperationExam' and sce_take.ref_exam_id=" + _examid;
 
             DataTable dt = _Q.Select(sql);
             XmlDocument doc = new XmlDocument();
@@ -173,6 +183,7 @@ namespace CooperationExam
         {
             _schoolYear = cboSchoolYear.Text;
             _semester = cboSemester.Text;
+            ExamItem exam = cboExam.SelectedItem as ExamItem;
 
             int sy;
             if (!int.TryParse(_schoolYear, out sy))
@@ -185,6 +196,16 @@ namespace CooperationExam
             {
                 MessageBox.Show("學期必須為1或2");
                 return;
+            }
+
+            if (exam == null)
+            {
+                MessageBox.Show("請選擇考試評量");
+                return;
+            }
+            else
+            {
+                _examid = exam.Value;
             }
 
             if (_BW.IsBusy)
@@ -203,6 +224,32 @@ namespace CooperationExam
             cboSchoolYear.Enabled = b;
             cboSemester.Enabled = b;
             btnOk.Enabled = b;
+        }
+
+        class ExamItem
+        {
+            string _key, _value;
+            public string DisplayText
+            {
+                get
+                {
+                    return _key;
+                }
+            }
+
+            public string Value
+            {
+                get
+                {
+                    return _value;
+                }
+            }
+
+            public ExamItem(string key, string value)
+            {
+                _key = key;
+                _value = value;
+            }
         }
     }
 }
