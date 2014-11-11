@@ -38,7 +38,18 @@ namespace CooperationExam
             {
                 new GradingCheckForm().ShowDialog();
             };
-            
+
+            RibbonBarItem coursePane = FISCA.Presentation.MotherForm.RibbonBarItems["課程", "協同教學"];
+            group.Add(new RibbonFeature(Permissions.協同成績輸入, "協同教學成績輸入"));
+            coursePane["成績輸入"].Enable = Permissions.協同成績輸入狀況權限;
+            K12.Presentation.NLDPanels.Course.SelectedSourceChanged += delegate
+            {
+                coursePane["成績輸入"].Enable = (K12.Presentation.NLDPanels.Course.SelectedSource.Count == 1);
+            };
+            coursePane["成績輸入"].Click += delegate
+            {
+                new GradingForm().ShowDialog();
+            };
         }
     }
 }

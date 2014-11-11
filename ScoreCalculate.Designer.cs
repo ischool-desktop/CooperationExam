@@ -138,7 +138,7 @@
             this.cboExam.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
             this.cboExam.FormattingEnabled = true;
             this.cboExam.ItemHeight = 19;
-            this.cboExam.Location = new System.Drawing.Point(93, 82);
+            this.cboExam.Location = new System.Drawing.Point(93, 76);
             this.cboExam.Name = "cboExam";
             this.cboExam.Size = new System.Drawing.Size(241, 25);
             this.cboExam.Style = DevComponents.DotNetBar.eDotNetBarStyle.StyleManagerControlled;
@@ -152,11 +152,11 @@
             // 
             this.labelX4.BackgroundStyle.Class = "";
             this.labelX4.BackgroundStyle.CornerType = DevComponents.DotNetBar.eCornerType.Square;
-            this.labelX4.Location = new System.Drawing.Point(12, 82);
+            this.labelX4.Location = new System.Drawing.Point(12, 76);
             this.labelX4.Name = "labelX4";
             this.labelX4.Size = new System.Drawing.Size(75, 23);
             this.labelX4.TabIndex = 5;
-            this.labelX4.Text = "考試評量";
+            this.labelX4.Text = "評量";
             this.labelX4.TextAlignment = System.Drawing.StringAlignment.Far;
             // 
             // ScoreCalculate

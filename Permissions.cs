@@ -25,5 +25,13 @@ namespace CooperationExam
             }
         }
 
+        public static string 協同成績輸入 { get { return "CooperationExam.C9F42223-41C2-4495-A092-FCDF7872F7B7"; } }
+        public static bool 協同成績輸入權限
+        {
+            get
+            {
+                return FISCA.Permission.UserAcl.Current[協同成績輸入].Executable;
+            }
+        }
     }
 }
